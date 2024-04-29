@@ -35,8 +35,18 @@ pipeline {
                     sh 'mvn test'
                 }    
             }
+        }
+
+        stage ('Deploy Frontend') {
+                steps{
+                    dir('frontend') {
+                        git branch: 'master', url: 'https://github.com/antoniocsjf/tasks-frontend'  
+                        sh 'mvn clean package -DskipTests=true'
+                        deploy adapters: [tomcat9(credentialsId: 'TomcatLogin', path: '', url: 'http://192.168.15.5:8001/')], contextPath: 'tasks', war: 'target/tasks.war'  
+                }
+            }    
+        }    
     }
-}
 }
             
   
