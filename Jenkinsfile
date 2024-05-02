@@ -18,13 +18,13 @@ pipeline {
             }
             steps{
                 withSonarQubeEnv('SONAR_LOCAL') {
-                    sh "${scannerHome}/bin/sonar-scanner -e -Dsonar.projectKey=DeployBack -Dsonar.host.url=http://192.168.15.172:9000 -Dsonar.login=sqp_ab785f44f816d0673f5db99d51c42d081e5ffcb4 -Dsonar.java.binaries=target -Dsonar.coverage.exclusions=**/.mvn/**,**/src/test/**,**/model/**,**Application.java"
+                    sh "${scannerHome}/bin/sonar-scanner -e -Dsonar.projectKey=DeployBack -Dsonar.host.url=http://192.168.15.170:9000 -Dsonar.login=sqp_ab785f44f816d0673f5db99d51c42d081e5ffcb4 -Dsonar.java.binaries=target -Dsonar.coverage.exclusions=**/.mvn/**,**/src/test/**,**/model/**,**Application.java"
             }
         }    
     }
         stage ('Deploy Backend') {
                 steps{
-                    deploy adapters: [tomcat9(credentialsId: 'TomcatLogin', path: '', url: 'http://192.168.15.5:8001/')], contextPath: 'tasks backend', war: 'target/tasks-backend.war'  
+                    deploy adapters: [tomcat9(credentialsId: 'TomcatLogin', path: '', url: 'http://192.168.15.3:8001/')], contextPath: 'tasks backend', war: 'target/tasks-backend.war'  
                 }
         }
     
@@ -42,7 +42,7 @@ pipeline {
                     dir('frontend') {
                         git branch: 'master', url: 'https://github.com/antoniocsjf/tasks-frontend'  
                         sh 'mvn clean package -DskipTests=true'
-                        deploy adapters: [tomcat9(credentialsId: 'TomcatLogin', path: '', url: 'http://192.168.15.5:8001/')], contextPath: 'tasks', war: 'target/tasks.war'  
+                        deploy adapters: [tomcat9(credentialsId: 'TomcatLogin', path: '', url: 'http://192.168.15.3:8001/')], contextPath: 'tasks', war: 'target/tasks.war'  
                 }
             }    
         }    
