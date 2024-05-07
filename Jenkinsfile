@@ -45,9 +45,17 @@ pipeline {
                         deploy adapters: [tomcat9(credentialsId: 'TomcatLogin', path: '', url: 'http://192.168.15.3:8001/')], contextPath: 'tasks', war: 'target/tasks.war'  
                 }
             }    
-        }    
+        } 
+
+        stage ('Deploy Prod') {
+                steps{
+                    sh docker compose build
+                    sh docker compose up -d
+                }
+            }    
+        }     
     }
-}
+
             
   
 
