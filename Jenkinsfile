@@ -52,9 +52,21 @@ pipeline {
                     sh 'docker compose build'
                     sh 'docker compose up -d'
                 }
-            }    
-        }     
-    }
+            }
+
+        post {
+            unsuccessful {
+               emailext body: 'See the attached log below', subject: 'Build $BUILD_NUMBER has failed', to: 'antonio.jf@gmail.com' 
+            }
+            fixed {
+               emailext body: 'See the attached log below', subject: 'Build is fine!!', to: 'antonio.jf@gmail.com' 
+            }
+            
+        } 
+         
+            }
+        }        
+         
 
             
   
