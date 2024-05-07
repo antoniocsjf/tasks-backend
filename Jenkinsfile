@@ -54,6 +54,9 @@ pipeline {
                 }
             
             post {
+                always {
+                    archiveArtifacts artifacts: 'target/tasks-backend.war, frontend/target/tasks.war', followSymlinks: false, onlyIfSuccessful: true
+                }
                 unsuccessful {
                 emailext body: 'See the attached log below', subject: 'Build $BUILD_NUMBER has failed', to: 'antonio.jf@gmail.com' 
                 }
