@@ -52,22 +52,33 @@ pipeline {
                     sh 'docker compose build'
                     sh 'docker compose up -d'
                 }
+            }    
+
+        stage ('Helth Check') {
+                steps{
+                    sleep(15)
+                    dir('functional-test') {
+                    sh 'mvn verify -Dskip.surefire.tests'
+                }
+            }
             
-            post {
-                always {
-                    archiveArtifacts artifacts: 'target/tasks-backend.war, frontend/target/tasks.war', followSymlinks: false, onlyIfSuccessful: true
-                }
-                unsuccessful {
-                emailext body: 'See the attached log below', subject: 'Build $BUILD_NUMBER has failed', to: 'antonio.jf@gmail.com' 
-                }
-                fixed {
-                emailext body: 'See the attached log below', subject: 'Build is fine!!', to: 'antonio.jf@gmail.com' 
-                }
-                
-            } 
+    post {
+        always {
+            junit allowEmptyResults: true, stdioRetention: '', testResults: 'target/surefire-reports/*.xml, api-test/target/surefire-reports/*.xml'
+            archiveArtifacts artifacts: 'target/tasks-backend.war, frontend/target/tasks.war', followSymlinks: false, onlyIfSuccessful: true
+        }
+        unsuccessful {
+        emailext body: 'See the attached log below', subject: 'Build $BUILD_NUMBER has failed', to: 'antonio.jf@gmail.com' 
+        }
+        fixed {
+        emailext body: 'See the attached log below', subject: 'Build is fine!!', to: 'antonio.jf@gmail.com' 
+        }
+        
+    } 
          
         }
-    }  
+    }
+
 }      
          
 
